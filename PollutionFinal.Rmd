@@ -1,0 +1,190 @@
+---
+title: 'TRABAJO DATA VISUALIZATION '
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+
+## Limpieza y analisis de la base de datos Pollution 
+
+En este trabajo vamos a realizar un analisis y lipieza de la base de datos llamada Pollution que contiene datos sobre la contaminacion de cuatro gases diferentes en cada estado de EEUU desde 2000 hasta 2016
+
+### Limpieza
+
+**Esquema de trabajo:**
+
+
+* Estraccion de datos a traves de la lectura del csv 'pollution_us_2000_2016.csv'
+* Realizacion de una copia de la informacion para mantener la integriedad de los datos originales
+* Eliminar columnas que consideramos no relevantes en el analisis
+* Renombrar las columnas a nombres intuitivos y en castellano
+* Casting necesarios. Fecha como principal cambio
+* Creacion de una nueva columna producto de otras de la tabla
+
+**Antes de comenzar con el analisis vamos a importar las librerias necesarias:**
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(lubridate)
+library(gdata)
+library(reshape2)
+```
+
+**Lectura de los datos:**
+
+```{r}
+# Read in csv files
+pollution <- read.csv("pollution_us_2000_2016.csv", stringsAsFactors = FALSE)
+pollution <- read.csv("pollution_us_2000_2016.csv", header = T, sep=",")
+```
+
+## Analisis inicial de la base de datos
+
+Aqui veremos los tipos de datos, numero y nombre de filas y columnas, dimensiones, asi como el resumen estadistico de la base de datos
+
+```{r}
+#como la base de datos es muy grande y tarda mucho en cargar, cogemos una muestra aleatoria de la bbdd
+muestramia <- sample(1:nrow(pollution),size=10000,replace=FALSE)
+
+pollutionmuestramia <- pollution[muestramia, ]
+head(pollutionmuestramia)
+dim(pollutionmuestramia)         # filas x columnas
+
+head(pollutionmuestramia)       #bbdd aleatoria de pollution
+summary(pollutionmuestramia)     #resumen de la bbdd pollution
+head(pollutionmuestramia, 10)    # primeras diez filas
+tail(pollutionmuestramia, 10)    #ultimas diez filas
+
+class(pollutionmuestramia)   #tipo 
+nrow(pollutionmuestramia)    # número de filas
+ncol(pollutionmuestramia)    # número de columnas
+```
+
+## Transformacion de los datos a DataFrame
+
+```{r}
+#convertimos a dataframe
+pollutionmuestramia <- as.data.frame(pollutionmuestramia)
+#como vemos con str el tipo de cada variables esta bien no hay que transformar
+str(pollutionmuestramia)     #las filas son oobservaciones y columnas las variables
+
+```
+
+**Una vez tenemos analizada la vista inicial dela tabla vamos a comenzar con la limpieza. En este caso lo realizaremos sobre columnas. Viendo el nombre de las mismas, eliminando las sobrantes, cambiando el nombre de todas ellas y por ultimo seprando la fecha creando tres diferentes con los datos del dia, el mes y el año**
+
+```{r}
+names(pollutionmuestramia)     #nombre de las columnas 
+colnames(pollutionmuestramia)  #nombre de las columnas
+#pasamos los nombres de las variables a minusculas
+names(pollutionmuestramia) <- tolower(names(pollutionmuestramia))
+
+#separamos la fecha en la columna date local, y la divido en 3 columnas distintas: en año, mes y dia, ahora tenemos 31 variables en vez de 29
+pollutionmuestramia <- separate(pollutionmuestramia, date.local, c("year", "month", "day")) 
+
+pollutionmuestramia$x <- NULL   #asigno NULL al valor del area, es decir borror la primera columna que no es interesante
+
+#cambiamos el nombre de las variables 
+colnames(pollutionmuestramia) <- c("codigo_estado", "codigo_condado", "numero_sitio", "direccion", "estado", "condado", "ciudad",
+                           "ano", "mes", "dia","unidades_NO2", "media_NO2", "valor_max_1st_NO2", "hora_max_1st_NO2",
+                           "AQI_NO2", "unidades_O3", "media_O3", "valor_max_1st_O3", "hora_max_1st_O3",
+                           "AQI_O3", "unidades_SO2", "media_SO2", "valor_max_1st_SO2", "hora_max_1st_SO2",
+                           "AQI_SO2", "unidades_CO", "media_CO", "valor_max_st_CO", "hora_max_1st_CO",
+                           "AQI_CO")
+
+#ponemos en minuscula el contenido de la variable direccion
+pollutionmuestramia$direccion <- tolower(pollutionmuestramia$direccion)
+
+#creamos una nueva columna que sea la media de la suma de los 4 gases
+pollutionmuestramia$valoresmaximos <- (pollutionmuestramia$valor_max_1st_NO2 + pollutionmuestramia$valor_max_1st_O3 + 
+                                         pollutionmuestramia$valor_max_1st_SO2 + pollutionmuestramia$valor_max_st_CO)
+```
+
+## Filas
+Al tener ya limpias las columnas podemos centrarnos en las filas. Verificaremos si existen valores nulos o NaN y los corregiremos, asi como saber las filas que tienen los datos correctos
+
+```{r}
+#check Nas values
+head(is.na(pollutionmuestramia), 1)
+#preguntamos si hay alguno
+head(any(is.na(pollutionmuestramia)), 1)
+#contamos el numero de Nas
+sum(is.na(pollutionmuestramia))
+
+#encontrar las filas que no falten datos
+head(complete.cases(pollutionmuestramia), 30)
+#subset data solo con los casos completos
+head(pollutionmuestramia[complete.cases(pollutionmuestramia),])
+```
+
+# Realizacion de los graficos
+
+## Histogramas
+Para poder ver las distribuciones de cada variable
+
+### histogramas de los datos de NO2
+
+```{r}
+hist(pollutionmuestramia$media_NO2, main = "Histograma Media NO2", xlab = "media")
+```
+
+## COMENTARIO
+
+```{r}
+hist(pollutionmuestramia$valor_max_1st_NO2, main = "Histograma Valor Máximo NO2", xlab = "valores máximo")
+```
+
+## COMENTARIO
+
+```{r}
+hist(pollutionmuestramia$hora_max_1st_NO2, main = "Histograma Hora Máximas NO2", xlab = "horas máximas")
+```
+
+## COMENTARIO
+
+```{r}
+hist(pollutionmuestramia$AQI_NO2, main = "Histograma AQI NO2", xlab = "AQI")
+```
+
+## COMENTARIO
+
+
+## Histogramas de los datos de la media de los demas gases
+
+```{r}
+hist(pollutionmuestramia$media_O3, main = "Histograma Media O3", xlab = "media")
+```
+
+## COMENTARIO
+
+```{r}
+hist(pollutionmuestramia$media_SO2, main = "Histograma Media SO2", xlab = "media")
+```
+
+## COMENTARIO
+
+```{r}
+hist(pollutionmuestramia$media_CO, main = "Histograma Media CO", xlab = "media")
+```
+
+## COMENTARIO
+
+
+## Boxplots
+
+```{r}
+#boxolot de los datos de Media 03 a lo largo de los años
+boxplot(media_O3 ~ ano, data=pollutionmuestramia, main="Media 03 / Años", xlab="Años", ylab="Media O3")
+```
+
+## COMENTARIO
+
+```{r}
+#boxolot de los datos de Media 03 en los diferentes estados
+boxplot(media_O3 ~ estado, data=pollutionmuestramia, main="Media 03 / Estados", xlab="Estados", ylab="Media O3")
+```
+
+## COMENTARIO
+
