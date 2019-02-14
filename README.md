@@ -7,7 +7,7 @@ Trabajo Data Visualization Pollution US en R
 1. Descarga el archivo .csv de Kaggle del Url indicado del cual hemos realizado el análisis e investigación para el proyecto:
 https://www.kaggle.com/sogun3/uspollution
 
-2. Guardar el archivo en la carpeta raiz junto con el notebook.
+2. Guardar el archivo en la carpeta raiz junto con el R notebook (rmd).
 
 3. Ejecutar.
 
