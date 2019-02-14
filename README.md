@@ -29,3 +29,8 @@ Asegurarse que este RStudio instalado en el ordenador.
 * library(lubridate)
 * library(gdata)
 * library(reshape2)
+
+# Participantes del trabajo
+
+** Jorge Rodriguez
+** 
