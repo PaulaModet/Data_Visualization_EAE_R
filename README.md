@@ -30,7 +30,7 @@ Asegurarse que este RStudio instalado en el ordenador.
 * library(gdata)
 * library(reshape2)
 
-# Participantes en el poryecto
+# Participantes en el proyecto
 
 * Jorge Rodriguez
 * Fernando Lorenzo
