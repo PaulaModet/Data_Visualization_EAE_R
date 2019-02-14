@@ -30,7 +30,10 @@ Asegurarse que este RStudio instalado en el ordenador.
 * library(gdata)
 * library(reshape2)
 
-# Participantes del trabajo
+# Participantes en el poryecto
 
-** Jorge Rodriguez
-** 
+* Jorge Rodriguez
+* Fernando Lorenzo
+* Maria Macias
+* Alexander Mendoza
+* Paula Modet
