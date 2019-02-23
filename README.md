@@ -23,6 +23,7 @@ Instalar RStudio
 Asegurarse que este RStudio instalado en el ordenador.
 
 ## Instalar las librerias
+En ocasiones no funcionan las librerias a la primera, por ello es necesario correr cada una de ellas dos veces.
 
 * library(dplyr)
 * library(tidyr)
