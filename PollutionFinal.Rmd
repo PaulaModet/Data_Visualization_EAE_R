@@ -85,6 +85,7 @@ names(pollutionmuestramia) <- tolower(names(pollutionmuestramia))
 pollutionmuestramia <- separate(pollutionmuestramia, date.local, c("year", "month", "day")) 
 
 pollutionmuestramia$x <- NULL   #asigno NULL al valor del area, es decir borror la primera columna que no es interesante
+pollutionmuestramia
 
 #cambiamos el nombre de las variables 
 colnames(pollutionmuestramia) <- c("codigo_estado", "codigo_condado", "numero_sitio", "direccion", "estado", "condado", "ciudad",
@@ -93,13 +94,16 @@ colnames(pollutionmuestramia) <- c("codigo_estado", "codigo_condado", "numero_si
                            "AQI_O3", "unidades_SO2", "media_SO2", "valor_max_1st_SO2", "hora_max_1st_SO2",
                            "AQI_SO2", "unidades_CO", "media_CO", "valor_max_st_CO", "hora_max_1st_CO",
                            "AQI_CO")
+pollutionmuestramia
 
 #ponemos en minuscula el contenido de la variable direccion
 pollutionmuestramia$direccion <- tolower(pollutionmuestramia$direccion)
+pollutionmuestramia
 
 #creamos una nueva columna que sea la media de la suma de los 4 gases
 pollutionmuestramia$valoresmaximos <- (pollutionmuestramia$valor_max_1st_NO2 + pollutionmuestramia$valor_max_1st_O3 + 
                                          pollutionmuestramia$valor_max_1st_SO2 + pollutionmuestramia$valor_max_st_CO)
+pollutionmuestramia
 ```
 
 ## Filas
@@ -130,25 +134,28 @@ Para poder ver las distribuciones de cada variable
 hist(pollutionmuestramia$media_NO2, main = "Histograma Media NO2", xlab = "media")
 ```
 
-## COMENTARIO
+## La media de NO2 parece seguir una distribución similar a la de Poisson con una cola larga a la derecha. La mayoría de los estados tienen una media similar que se encuentra entre 5 y 20, sin embargo, hay ciertos estados que salen de esa media. California o Pennsylvania son los más representativos y son los que generan, en parte, esa cola lateral alargada.
 
 ```{r}
 hist(pollutionmuestramia$valor_max_1st_NO2, main = "Histograma Valor Máximo NO2", xlab = "valores máximo")
 ```
 
-## COMENTARIO
+##  Los valores máximos se concentran en valores más pequeños en su mayoría, generando una distribución, de nuevo, similar a Poisson, aunque con una cola derecha más corta, ya que hay pocos datos que se vayan lejos de la media.
 
 ```{r}
 hist(pollutionmuestramia$hora_max_1st_NO2, main = "Histograma Hora Máximas NO2", xlab = "horas máximas")
 ```
 
-## COMENTARIO
+## Parece observarse una curva en forma de U en el histograma en el que hay valores altos durante la noche y tarde y muy bajos durante la mañana, hasta el mediodía. Ligera excepción de madrugada, con orígenes desconocidos. Quizás incluso una mala medición.
+
 
 ```{r}
 hist(pollutionmuestramia$AQI_NO2, main = "Histograma AQI NO2", xlab = "AQI")
 ```
 
-## COMENTARIO
+## Al igual que ocurre con la media de NO2, el AQI de NO2 vuelve a parecer una distribución de Poisson muy pegada a la izquierda, con la mayoría de valores muy bajos y, por lo tanto, la media también.
+
+## En cambio, la cola derecha, a pesar de ser pequeña, es larga. Lo que significa que hay ciertos estados que tienen una gran diferencia, incluso entre ellos mismos.
 
 
 ## Histogramas de los datos de la media de los demas gases
@@ -157,19 +164,19 @@ hist(pollutionmuestramia$AQI_NO2, main = "Histograma AQI NO2", xlab = "AQI")
 hist(pollutionmuestramia$media_O3, main = "Histograma Media O3", xlab = "media")
 ```
 
-## COMENTARIO
+## En el caso del ozono, sin embargo, la distribución se parece mas a una normal, sin embargo, existen ligeras asimetrías. Puede ser debido, sobre todo, al amplio número de estados a medir.
+
 
 ```{r}
 hist(pollutionmuestramia$media_SO2, main = "Histograma Media SO2", xlab = "media")
 ```
 
-## COMENTARIO
 
 ```{r}
 hist(pollutionmuestramia$media_CO, main = "Histograma Media CO", xlab = "media")
 ```
 
-## COMENTARIO
+## En el caso del SO2 y el CO, la distribución es más pronunciada y semejante a Poisson. En este caso, la mayoría vuelven a encontrarse de media en la zona más baja, sin embargo, con un pico muy alto. Se debe probablemente a la existencia de numerosos puntos atípicos que desvirtúan en parte la distribución.
 
 
 ## Boxplots
@@ -179,12 +186,14 @@ hist(pollutionmuestramia$media_CO, main = "Histograma Media CO", xlab = "media")
 boxplot(media_O3 ~ ano, data=pollutionmuestramia, main="Media 03 / Años", xlab="Años", ylab="Media O3")
 ```
 
-## COMENTARIO
+## No parece haber muchas variaciones a lo largo de los años, al menos, respecto a la media. Sin embargo, hay años en los que determinados estados salen fuera de la misma, situándose como puntos atípicos, lo que provoca un desplazamiento de la media.
+
 
 ```{r}
 #boxolot de los datos de Media 03 en los diferentes estados
 boxplot(media_O3 ~ estado, data=pollutionmuestramia, main="Media 03 / Estados", xlab="Estados", ylab="Media O3")
 ```
 
-## COMENTARIO
+## Sin embargo, sí se pueden observar diferencias significativas entre las medias de los diferentes estados, viendo cómo algunos tienen una media muy baja, media o muy alta. Aunque sí que existe una tendencia de medias a estar entre dos valores próximos (Entre 0,2 y 0,3).
+
 
